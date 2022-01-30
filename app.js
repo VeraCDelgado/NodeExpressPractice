@@ -1,17 +1,37 @@
 const express = require('express');
+const { products } = require('./data.js');
+
 const app = express();
-const path = require('path');
-app.listen(5000, (req, res) => {
-    console.log('Server is listening on port 5000');
+
+app.get('/', (req, res) => {
+    res.send('<h1>Home page</h1><a href=/api/products>Products</a></br><a href=/api/products/details>Detalle</a>');
+
+})
+
+app.get('/api/products', (req, res) => {
+
+    res.json(products);
 });
-//setup static and middlewares
+app.get('/api/products/details', (req, res) => {
+    const newProduct = products.map((product) => {
+        const { id, name, image } = product;
+        return { id, name, image }
+    })
+    res.json(newProduct);
 
-app.use(express.static('./public'));
+});
+app.get('/api/products/1', (req, res) => {
+    const singleProduct = products.find((product) => product.id === 1)
+        //evaluar detenidamiente este codigo ya que funciona de esta manera pero
+        //no si se utiliza la sentencia if.
+    res.json(singleProduct);
 
-// app.get('/', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, './navbar-app/index.html'))
-// })
 
-app.all('*', (req, res) => {
-    res.status(404).send('Resource not found');
+
+
+});
+
+
+app.listen(5000, (req, res) => {
+    console.log('Server is listening on port 5000...');
 })
